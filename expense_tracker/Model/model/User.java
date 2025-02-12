@@ -1,6 +1,7 @@
 package model;
 
 public class User {
+    private int id;
     private String firstName;
     private String lastName;
     private String username;
@@ -8,7 +9,8 @@ public class User {
     private String phone;
     private String passwordHash;
 
-    public User(String firstName, String lastName, String username, String email, String phone, String passwordHash) {
+    public User(int id, String firstName, String lastName, String username, String email, String phone, String passwordHash) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -17,6 +19,7 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
+    public int getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
     public String getUsername() { return username; }
