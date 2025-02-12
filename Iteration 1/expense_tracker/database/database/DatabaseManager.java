@@ -19,4 +19,4 @@ public class DatabaseManager {
     public static List<Expense> getExpenses() {
         return expenses;
     }
-}
+} 
