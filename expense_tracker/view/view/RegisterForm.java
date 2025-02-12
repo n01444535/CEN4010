@@ -12,7 +12,7 @@ public class RegisterForm extends JFrame {
     private JButton registerButton;
 
     public RegisterForm() {
-        setTitle("Sign Up");
+        setTitle("Sign Up For New Customer");
         setSize(400, 450);
         setLayout(null);
         getContentPane().setBackground(Color.BLACK);

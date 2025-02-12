@@ -4,7 +4,7 @@ import javax.swing.*;
 
 public class MainFrame extends JFrame {
     public MainFrame() {
-        setTitle("Expense Tracker");
+        setTitle("Budget Manangement");
         setSize(400, 300);
         setLayout(null);
 
