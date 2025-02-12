@@ -10,5 +10,6 @@
 	<classpathentry kind="src" path="view"/>
 	<classpathentry kind="src" path="controller"/>
 	<classpathentry kind="src" path="database"/>
+	<classpathentry kind="lib" path="/Users/davidtrietlam/Downloads/mysql-connector-j-9.2.0/mysql-connector-j-9.2.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

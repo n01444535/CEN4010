@@ -45,10 +45,11 @@ public class ExpenseForm extends JFrame {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	String email = categoryField.getText();
                 String category = categoryField.getText();
                 double amount = Double.parseDouble(amountField.getText());
                 String note = noteField.getText();
-                ExpenseController.addExpense(category, amount, note);
+                ExpenseController.addExpense(email, category, amount, note);
                 JOptionPane.showMessageDialog(null, "Expense Added!");
             }
         });
