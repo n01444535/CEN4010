@@ -32,7 +32,7 @@ public class LoginForm extends JFrame {
         titleLabel.setBounds(120, 20, 200, 30);
         add(titleLabel);
 
-        JLabel emailLabel = new JLabel("Usernamee");
+        JLabel emailLabel = new JLabel("Username");
         emailLabel.setForeground(Color.WHITE);
         emailLabel.setBounds(40, 70, 80, 25);
         add(emailLabel);
