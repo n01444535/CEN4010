@@ -2,7 +2,7 @@ package controller;
 
 import database.DatabaseManager;
 import model.Expense;
-import model.UserController;
+import controller.UserController;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

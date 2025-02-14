@@ -2,7 +2,7 @@ package view;
 
 import javax.swing.*;
 
-import model.UserController;
+import controller.UserController;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

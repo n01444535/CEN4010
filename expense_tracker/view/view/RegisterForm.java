@@ -1,6 +1,6 @@
 package view;
 
-import model.UserController;
+import controller.UserController;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
