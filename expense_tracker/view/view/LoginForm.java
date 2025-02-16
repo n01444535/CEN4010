@@ -75,7 +75,6 @@ public class LoginForm extends JFrame {
 
                 boolean success = UserController.authenticateUser(username, password);
                 if (success) {
-                    JOptionPane.showMessageDialog(null, "Login Successful! Welcome.");
                     dispose();
                     new MainFrame();
                 } else {

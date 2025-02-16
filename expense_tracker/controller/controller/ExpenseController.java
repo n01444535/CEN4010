@@ -2,7 +2,6 @@ package controller;
 
 import database.DatabaseManager;
 import model.Expense;
-import controller.UserController;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,10 +13,6 @@ import java.util.List;
 public class ExpenseController {
 
     public static boolean addExpense(String email, String category, double amount, String note) {
-        if (!UserController.isEmailRegistered(email)) {
-            System.out.println("User authentication failed. Cannot add expense.");
-            return false;
-        }
         String query = "INSERT INTO Expenses (user_id, category, amount, note) VALUES ((SELECT id FROM Users WHERE email = ?), ?, ?, ?)";
         try (Connection conn = DatabaseManager.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -34,10 +29,6 @@ public class ExpenseController {
     }
 
     public static List<Expense> getExpensesByUser(String email) {
-        if (!UserController.isEmailRegistered(email)) {
-            System.out.println("User authentication failed. Cannot retrieve expenses.");
-            return new ArrayList<>();
-        }
         List<Expense> expenses = new ArrayList<>();
         String query = "SELECT * FROM Expenses WHERE user_id = (SELECT id FROM Users WHERE email = ?)";
         try (Connection conn = DatabaseManager.connect();
@@ -60,16 +51,12 @@ public class ExpenseController {
         return expenses;
     }
 
-    public static boolean deleteExpense(String email, int expenseId) {
-        if (!UserController.isEmailRegistered(email)) {
-            System.out.println("User authentication failed. Cannot delete expense.");
-            return false;
-        }
-        String query = "DELETE FROM Expenses WHERE id = ? AND user_id = (SELECT id FROM Users WHERE email = ?)";
+    public static boolean deleteExpenseByCategory(String email, String category) {
+        String query = "DELETE FROM Expenses WHERE user_id = (SELECT id FROM Users WHERE email = ?) AND category = ?";
         try (Connection conn = DatabaseManager.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, expenseId);
-            stmt.setString(2, email);
+            stmt.setString(1, email);
+            stmt.setString(2, category);
             int affectedRows = stmt.executeUpdate();
             return affectedRows > 0;
         } catch (SQLException e) {
