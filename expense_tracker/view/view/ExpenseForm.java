@@ -6,18 +6,22 @@ import controller.UserController;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class ExpenseForm extends JFrame {
     private JTextField categoryField, noteField;
     private JFormattedTextField amountField;
     private JButton addButton;
-    private String amountString = "0.00";
+    private String amountString = "0";
     private MainFrame parentFrame;
+    private NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
 
     public ExpenseForm(MainFrame parent) {
         this.parentFrame = parent;
         setTitle("Add Expense");
-        setSize(320, 250);
+        setSize(350, 270);
         setLayout(null);
         setLocationRelativeTo(null);
 
@@ -26,7 +30,7 @@ public class ExpenseForm extends JFrame {
         add(categoryLabel);
 
         categoryField = new JTextField();
-        categoryField.setBounds(120, 20, 160, 25);
+        categoryField.setBounds(120, 20, 180, 25);
         add(categoryField);
 
         JLabel amountLabel = new JLabel("Amount:");
@@ -34,7 +38,7 @@ public class ExpenseForm extends JFrame {
         add(amountLabel);
 
         amountField = new JFormattedTextField();
-        amountField.setBounds(120, 60, 160, 25);
+        amountField.setBounds(120, 60, 180, 25);
         amountField.setText("$0.00");
         amountField.setEditable(false);
         add(amountField);
@@ -47,9 +51,8 @@ public class ExpenseForm extends JFrame {
                     e.consume();
                     return;
                 }
-                amountString = amountString.replace(".", "") + c;
-                double amountValue = Double.parseDouble(amountString) / 100;
-                amountField.setText("$" + String.format("%.2f", amountValue));
+                amountString = amountString.replace(",", "") + c;
+                updateAmountField();
             }
 
             @Override
@@ -59,8 +62,7 @@ public class ExpenseForm extends JFrame {
                 } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
                     amountString = "0";
                 }
-                double amountValue = Double.parseDouble(amountString) / 100;
-                amountField.setText("$" + String.format("%.2f", amountValue));
+                updateAmountField();
             }
         });
 
@@ -69,29 +71,29 @@ public class ExpenseForm extends JFrame {
         add(noteLabel);
 
         noteField = new JTextField();
-        noteField.setBounds(120, 100, 160, 25);
+        noteField.setBounds(120, 100, 180, 25);
         add(noteField);
 
         addButton = new JButton("Add Expense");
-        addButton.setBounds(100, 150, 120, 35);
+        addButton.setBounds(100, 150, 140, 35);
         add(addButton);
 
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String categoryInput = categoryField.getText().trim();
-                String category = categoryInput.substring(0, 1).toUpperCase() + categoryInput.substring(1); 
+                String category = categoryField.getText().trim();
+                if (category.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Category cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                category = category.substring(0, 1).toUpperCase() + category.substring(1); 
                 String note = noteField.getText().trim();
                 double amount = Double.parseDouble(amountString) / 100;
 
                 String email = UserController.getLoggedInUser().getEmail();
                 if (email == null || email.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "User is not logged in!", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                if (categoryInput.toLowerCase().isEmpty()) { 
-                    JOptionPane.showMessageDialog(null, "Category cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
@@ -108,5 +110,10 @@ public class ExpenseForm extends JFrame {
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
+    }
+
+    private void updateAmountField() {
+        double amountValue = Double.parseDouble(amountString) / 100;
+        amountField.setText(currencyFormat.format(amountValue));
     }
 }

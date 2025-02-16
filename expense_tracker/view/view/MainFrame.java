@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class MainFrame extends JFrame {
@@ -78,13 +79,15 @@ public class MainFrame extends JFrame {
      void loadExpenses() {
         expenseListModel.clear();
         List<Expense> expenses = ExpenseController.getExpensesByUser(UserController.getLoggedInUser().getEmail());
-        int index = 1;
+        DecimalFormat formatter = new DecimalFormat("#,##0.00"); 
+        int index = 1; 
 
         for (Expense expense : expenses) {
-            String categoryFormatted = expense.getCategory().substring(0, 1).toUpperCase() + expense.getCategory().substring(1); // Viết hoa chữ đầu tiên
-            String displayText = index + " - " + categoryFormatted + " - $" + String.format("%.2f", expense.getAmount());
+            String categoryFormatted = expense.getCategory().substring(0, 1).toUpperCase() + expense.getCategory().substring(1); 
+            String amountFormatted = "$" + formatter.format(expense.getAmount()); 
+            String displayText = index + " - " + categoryFormatted + " - " + amountFormatted;
 
-            if (!expense.getNote().isEmpty()) {
+            if (!expense.getNote().isEmpty()) { 
                 displayText += " (" + expense.getNote() + ")";
             }
             expenseListModel.addElement(displayText);
