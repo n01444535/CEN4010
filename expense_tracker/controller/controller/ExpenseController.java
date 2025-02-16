@@ -64,4 +64,20 @@ public class ExpenseController {
             return false;
         }
     }
+    
+    public static boolean updateExpense(int expenseId, String category, double amount, String note) {
+        String query = "UPDATE Expenses SET category = ?, amount = ?, note = ? WHERE id = ?";
+        try (Connection conn = DatabaseManager.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, category);
+            stmt.setDouble(2, amount);
+            stmt.setString(3, note);
+            stmt.setInt(4, expenseId);
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating expense: " + e.getMessage());
+            return false;
+        }
+    }
 }

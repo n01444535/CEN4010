@@ -2,26 +2,33 @@ package view;
 
 import controller.ExpenseController;
 import controller.UserController;
+import model.Expense;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
 public class ExpenseForm extends JFrame {
     private JTextField categoryField, noteField;
     private JFormattedTextField amountField;
-    private JButton addButton;
+    private JButton addButton, editButton;
     private String amountString = "0";
     private MainFrame parentFrame;
     private NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
+    private Expense existingExpense;
 
     public ExpenseForm(MainFrame parent) {
+        this(parent, null);
+    }
+
+    public ExpenseForm(MainFrame parent, Expense expense) {
         this.parentFrame = parent;
-        setTitle("Add Expense");
-        setSize(350, 270);
+        this.existingExpense = expense;
+        
+        setTitle(expense == null ? "Add Expense" : "Edit Expense");
+        setSize(350, 300);
         setLayout(null);
         setLocationRelativeTo(null);
 
@@ -39,9 +46,36 @@ public class ExpenseForm extends JFrame {
 
         amountField = new JFormattedTextField();
         amountField.setBounds(120, 60, 180, 25);
-        amountField.setText("$0.00");
         amountField.setEditable(false);
         add(amountField);
+
+        JLabel noteLabel = new JLabel("Note:");
+        noteLabel.setBounds(20, 100, 80, 25);
+        add(noteLabel);
+
+        noteField = new JTextField();
+        noteField.setBounds(120, 100, 180, 25);
+        add(noteField);
+
+        addButton = new JButton("Add Expense");
+        addButton.setBounds(50, 150, 120, 35);
+        add(addButton);
+
+        editButton = new JButton("Edit Expense");
+        editButton.setBounds(180, 150, 120, 35);
+        editButton.setVisible(false);
+        add(editButton);
+
+        if (existingExpense != null) {
+            categoryField.setText(existingExpense.getCategory());
+            amountString = String.valueOf((int) (existingExpense.getAmount() * 100));
+            amountField.setText(currencyFormat.format(existingExpense.getAmount()));
+            noteField.setText(existingExpense.getNote());
+            addButton.setVisible(false);
+            editButton.setVisible(true);
+        } else {
+            amountField.setText("$0.00");
+        }
 
         amountField.addKeyListener(new KeyAdapter() {
             @Override
@@ -66,50 +100,44 @@ public class ExpenseForm extends JFrame {
             }
         });
 
-        JLabel noteLabel = new JLabel("Note:");
-        noteLabel.setBounds(20, 100, 80, 25);
-        add(noteLabel);
-
-        noteField = new JTextField();
-        noteField.setBounds(120, 100, 180, 25);
-        add(noteField);
-
-        addButton = new JButton("Add Expense");
-        addButton.setBounds(100, 150, 140, 35);
-        add(addButton);
-
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String category = categoryField.getText().trim();
-                if (category.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Category cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                category = category.substring(0, 1).toUpperCase() + category.substring(1); 
-                String note = noteField.getText().trim();
-                double amount = Double.parseDouble(amountString) / 100;
-
-                String email = UserController.getLoggedInUser().getEmail();
-                if (email == null || email.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "User is not logged in!", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                boolean success = ExpenseController.addExpense(email, category, amount, note);
-                if (success) {
-                    JOptionPane.showMessageDialog(null, "Expense Added!");
-                    parentFrame.loadExpenses();
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Failed to add expense. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
+        addButton.addActionListener(e -> handleExpenseAction(false));
+        editButton.addActionListener(e -> handleExpenseAction(true));
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
+    }
+
+    private void handleExpenseAction(boolean isEdit) {
+        String category = categoryField.getText().trim();
+        if (category.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Category cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String formattedCategory = category.substring(0, 1).toUpperCase() + category.substring(1);
+        String note = noteField.getText().trim();
+        double amount = Double.parseDouble(amountString) / 100;
+
+        String email = UserController.getLoggedInUser().getEmail();
+        if (email == null || email.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "User is not logged in!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        boolean success;
+        if (isEdit && existingExpense != null) {
+            success = ExpenseController.updateExpense(existingExpense.getId(), formattedCategory, amount, note);
+        } else {
+            success = ExpenseController.addExpense(email, formattedCategory, amount, note);
+        }
+
+        if (success) {
+            JOptionPane.showMessageDialog(null, isEdit ? "Expense Updated!" : "Expense Added!");
+            parentFrame.loadExpenses();
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "Failed to process expense. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void updateAmountField() {

@@ -15,11 +15,11 @@ import java.util.List;
 public class MainFrame extends JFrame {
     private DefaultListModel<String> expenseListModel;
     private JList<String> expenseList;
-    private JButton addExpenseButton, deleteExpenseButton;
+    private JButton addExpenseButton, deleteExpenseButton, editExpenseButton;
 
     public MainFrame() {
         setTitle("Budget Management");
-        setSize(400, 350);
+        setSize(400, 400);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -51,24 +51,29 @@ public class MainFrame extends JFrame {
             new LoginForm();
         });
 
+        // Căn chỉnh lại vị trí các nút
         addExpenseButton = new JButton("Add Expense");
         addExpenseButton.setBounds(50, 50, 130, 40);
         add(addExpenseButton);
 
+        editExpenseButton = new JButton("Edit Expense");
+        editExpenseButton.setBounds(220, 50, 130, 40);
+        add(editExpenseButton);
+
         deleteExpenseButton = new JButton("Delete Expense");
-        deleteExpenseButton.setBounds(200, 50, 130, 40);
+        deleteExpenseButton.setBounds(135, 100, 130, 40);
         add(deleteExpenseButton);
 
         expenseListModel = new DefaultListModel<>();
         expenseList = new JList<>(expenseListModel);
         JScrollPane scrollPane = new JScrollPane(expenseList);
-        scrollPane.setBounds(50, 100, 300, 180);
+        scrollPane.setBounds(50, 160, 300, 180);
         add(scrollPane);
 
         loadExpenses();
 
         addExpenseButton.addActionListener(e -> new ExpenseForm(this));
-
+        editExpenseButton.addActionListener(e -> editSelectedExpense());
         deleteExpenseButton.addActionListener(e -> deleteSelectedExpense());
 
         add(userLabel);
@@ -76,7 +81,7 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
-     void loadExpenses() {
+    void loadExpenses() {
         expenseListModel.clear();
         List<Expense> expenses = ExpenseController.getExpensesByUser(UserController.getLoggedInUser().getEmail());
         DecimalFormat formatter = new DecimalFormat("#,##0.00"); 
@@ -95,15 +100,25 @@ public class MainFrame extends JFrame {
         }
     }
 
+    private void editSelectedExpense() {
+        int selectedIndex = expenseList.getSelectedIndex();
+        if (selectedIndex != -1) {
+            List<Expense> expenses = ExpenseController.getExpensesByUser(UserController.getLoggedInUser().getEmail());
+            Expense selectedExpense = expenses.get(selectedIndex);
+            new ExpenseForm(this, selectedExpense);
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an expense to edit.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void deleteSelectedExpense() {
         int selectedIndex = expenseList.getSelectedIndex();
         if (selectedIndex != -1) {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                String selectedValue = expenseListModel.getElementAt(selectedIndex);
-                String category = selectedValue.split(" - ")[1]; 
-
-                boolean success = ExpenseController.deleteExpenseByCategory(UserController.getLoggedInUser().getEmail(), category);
+                List<Expense> expenses = ExpenseController.getExpensesByUser(UserController.getLoggedInUser().getEmail());
+                Expense selectedExpense = expenses.get(selectedIndex);
+                boolean success = ExpenseController.deleteExpenseByCategory(UserController.getLoggedInUser().getEmail(), selectedExpense.getCategory());
                 if (success) {
                     loadExpenses(); 
                 } else {
