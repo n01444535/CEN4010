@@ -16,7 +16,7 @@ public class LoginForm extends JFrame {
 
     public LoginForm() {
         setTitle("Budget Management");
-        setSize(350, 250);
+        setSize(350, 280);
         setLayout(null);
         getContentPane().setBackground(Color.BLACK);
 
@@ -80,6 +80,19 @@ public class LoginForm extends JFrame {
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid credentials. Try again.");
                 }
+            }
+        });
+
+        JLabel signUpLabel = new JLabel("New Customer? Sign Up");
+        signUpLabel.setForeground(Color.YELLOW);
+        signUpLabel.setBounds(100, 245, 200, 25);
+        signUpLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        add(signUpLabel);
+
+        signUpLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                dispose(); 
+                new RegisterForm();
             }
         });
 
