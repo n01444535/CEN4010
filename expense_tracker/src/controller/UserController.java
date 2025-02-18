@@ -93,6 +93,35 @@ public class UserController {
             return false;
         }
     }
+    
+    public static boolean updateUserInfo(int userId, String firstName, String lastName, String email, String phone, String newPassword) {
+        String query;
+        if (newPassword != null) {
+            query = "UPDATE Users SET password_hash = ? WHERE id = ?";
+        } else {
+            query = "UPDATE Users SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE id = ?";
+        }
+        
+        try (Connection conn = DatabaseManager.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            if (newPassword != null) {
+                stmt.setString(1, newPassword);
+                stmt.setInt(2, userId);
+            } else {
+                stmt.setString(1, firstName);
+                stmt.setString(2, lastName);
+                stmt.setString(3, email);
+                stmt.setString(4, phone);
+                stmt.setInt(5, userId);
+            }
+            
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating user info: " + e.getMessage());
+            return false;
+        }
+    }
 
     public static User getLoggedInUser() {
         return loggedInUser;

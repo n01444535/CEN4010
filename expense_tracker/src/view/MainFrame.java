@@ -51,7 +51,6 @@ public class MainFrame extends JFrame {
             new LoginForm();
         });
 
-        // Căn chỉnh lại vị trí các nút
         addExpenseButton = new JButton("Add Expense");
         addExpenseButton.setBounds(50, 50, 130, 40);
         add(addExpenseButton);
@@ -75,6 +74,7 @@ public class MainFrame extends JFrame {
         addExpenseButton.addActionListener(e -> new ExpenseForm(this));
         editExpenseButton.addActionListener(e -> editSelectedExpense());
         deleteExpenseButton.addActionListener(e -> deleteSelectedExpense());
+        settingsItem.addActionListener(e -> new EditInfoForm());
 
         add(userLabel);
         setLocationRelativeTo(null);

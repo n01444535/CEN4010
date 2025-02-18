@@ -7,8 +7,8 @@ import java.sql.Statement;
 
 public class DatabaseManager {
     private static final String URL = "jdbc:mysql://localhost:3306/ExpenseTracker";
-    private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String USER = "DavidMac";
+    private static final String PASSWORD = "THULE.2710";
 
     public static Connection connect() {
         try {
