@@ -68,7 +68,6 @@ public class MainFrame extends JFrame {
         scrollPane.setBounds(50, 160, 300, 180);
         add(scrollPane);
 
-        // Thêm label hiển thị tổng chi tiêu
         totalExpenseLabel = new JLabel("Total Spent: $0.00");
         totalExpenseLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         totalExpenseLabel.setBounds(50, 350, 300, 25);
@@ -109,8 +108,7 @@ public class MainFrame extends JFrame {
             expenseListModel.addElement(displayText);
             index++;
         }
-
-        // Cập nhật tổng chi tiêu
+        
         totalExpenseLabel.setText("Total Spent: $" + formatter.format(totalSpent));
 
         expenseList.setModel(expenseListModel);
