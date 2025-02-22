@@ -134,7 +134,8 @@ public class MainFrame extends JFrame {
             if (confirm == JOptionPane.YES_OPTION) {
                 List<Expense> expenses = ExpenseController.getExpensesByUser(UserController.getLoggedInUser().getEmail());
                 Expense selectedExpense = expenses.get(selectedIndex);
-                boolean success = ExpenseController.deleteExpenseByCategory(UserController.getLoggedInUser().getEmail(), selectedExpense.getCategory());
+                
+                boolean success = ExpenseController.deleteExpenseById(selectedExpense.getId());
                 if (success) {
                     loadExpenses(); 
                 } else {

@@ -68,21 +68,20 @@ public class ExpenseController {
         return expenses;
     }
 
-    public static boolean deleteExpenseByCategory(String email, String category) {
-        String query = "DELETE FROM EXPENSES WHERE USER_ID = (SELECT ID FROM USERS WHERE EMAIL = ?) AND CATEGORY = ?";
+    public static boolean deleteExpenseById(int expenseId) {
+        String query = "DELETE FROM EXPENSES WHERE ID = ?";
         
         try (Connection conn = DatabaseManager.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            stmt.setString(1, email);
-            stmt.setString(2, category);
-
+            stmt.setInt(1, expenseId);
             int affectedRows = stmt.executeUpdate();
+
             if (affectedRows > 0) {
-                System.out.println("✅ Expense(s) deleted for category: " + category + " by user: " + email);
+                System.out.println("✅ Expense deleted successfully for ID: " + expenseId);
                 return true;
             } else {
-                System.out.println("⚠️ No expenses found to delete for category: " + category + " by user: " + email);
+                System.out.println("⚠️ No expense found to delete for ID: " + expenseId);
                 return false;
             }
 
