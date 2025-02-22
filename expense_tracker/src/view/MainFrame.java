@@ -7,19 +7,18 @@ import model.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.util.List;
 
 public class MainFrame extends JFrame {
     private DefaultListModel<String> expenseListModel;
     private JList<String> expenseList;
+    private JLabel totalExpenseLabel;
     private JButton addExpenseButton, deleteExpenseButton, editExpenseButton;
 
     public MainFrame() {
         setTitle("Budget Management");
-        setSize(400, 400);
+        setSize(400, 450);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -69,6 +68,12 @@ public class MainFrame extends JFrame {
         scrollPane.setBounds(50, 160, 300, 180);
         add(scrollPane);
 
+        // Thêm label hiển thị tổng chi tiêu
+        totalExpenseLabel = new JLabel("Total Spent: $0.00");
+        totalExpenseLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        totalExpenseLabel.setBounds(50, 350, 300, 25);
+        add(totalExpenseLabel);
+
         loadExpenses();
 
         addExpenseButton.addActionListener(e -> new ExpenseForm(this));
@@ -85,19 +90,30 @@ public class MainFrame extends JFrame {
         expenseListModel.clear();
         List<Expense> expenses = ExpenseController.getExpensesByUser(UserController.getLoggedInUser().getEmail());
         DecimalFormat formatter = new DecimalFormat("#,##0.00"); 
-        int index = 1; 
+        int index = 1;
+        double totalSpent = 0.0;
 
         for (Expense expense : expenses) {
-            String categoryFormatted = expense.getCategory().substring(0, 1).toUpperCase() + expense.getCategory().substring(1); 
-            String amountFormatted = "$" + formatter.format(expense.getAmount()); 
+            String category = (expense.getCategory() == null || expense.getCategory().isEmpty()) ? "Unknown" : expense.getCategory();
+            String categoryFormatted = category.substring(0, 1).toUpperCase() + category.substring(1);
+            
+            double amount = expense.getAmount();
+            totalSpent += amount;
+            String amountFormatted = "$" + formatter.format(amount);
             String displayText = index + " - " + categoryFormatted + " - " + amountFormatted;
 
-            if (!expense.getNote().isEmpty()) { 
+            if (expense.getNote() != null && !expense.getNote().isEmpty()) { 
                 displayText += " (" + expense.getNote() + ")";
             }
+            
             expenseListModel.addElement(displayText);
-            index++; 
+            index++;
         }
+
+        // Cập nhật tổng chi tiêu
+        totalExpenseLabel.setText("Total Spent: $" + formatter.format(totalSpent));
+
+        expenseList.setModel(expenseListModel);
     }
 
     private void editSelectedExpense() {

@@ -1,14 +1,18 @@
 package test;
 
-import org.junit.jupiter.api.Test;
-import org.junit.platform.suite.api.SelectPackages;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
+import org.junit.runner.RunWith;
+import org.junit.platform.runner.JUnitPlatform;
 
+@SuppressWarnings("deprecation")
+@RunWith(JUnitPlatform.class) 
 @Suite
-@SelectPackages({"database", "controller", "model", "view"})
+@SelectClasses({
+    ExpenseControllerTest.class,
+    DatabaseManagerTest.class,
+    UserControllerTest.class,
+    LoginFormTest.class
+})
 public class MainTestSuite {
-    @Test
-    void testSuiteRunner() {
-        System.out.println("✅ Running all tests...");
-    }
 }
