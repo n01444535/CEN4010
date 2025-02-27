@@ -6,6 +6,6 @@ import view.LoginForm;
 public class Budget {
     public static void main(String[] args) {
         DatabaseManager.initialize();
-        new LoginForm();
+        LoginForm loginForm = new LoginForm();
     }
 }

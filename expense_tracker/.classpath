@@ -8,7 +8,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry excluding="test/" kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="lib" path="/Users/davidtrietlam/Downloads/mysql-connector-j-9.2.0/mysql-connector-j-9.2.0.jar"/>
-	<classpathentry kind="lib" path="/Users/davidtrietlam/Downloads/ojdbc8.jar"/>
+	<classpathentry kind="lib" path="/Users/davidtrietlam/git/n01444535/CEN4010/expense_tracker/ojdbc8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
