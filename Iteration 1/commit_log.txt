@@ -1,0 +1,39 @@
+7ed24ab - n01444535, 7 minutes ago : submission file pdf
+091043b - n01444535, 4 days ago : just trying to change the oracle from the git instead of local
+1f6a8e2 - n01444535, 5 days ago : no need module
+726f5b0 - n01444535, 9 days ago : after fixing the test, the test is running perfect for now
+8523b91 - n01444535, 9 days ago : delete the comment
+6e23570 - n01444535, 9 days ago : fixing the error from deleting expense
+7899d50 - n01444535, 9 days ago : create the new table expense becasue the errror fixing the error for not adding the new info trying to fix the test for junit
+5bd4133 - n01444535, 10 days ago : add new test case for junit test (still error)
+f573f82 - n01444535, 10 days ago : n/a
+592eb5c - n01444535, 11 days ago : upload the database necessary
+78b9a92 - n01444535, 12 days ago : change the sql develop instead of
+efe9963 - n01444535, 12 days ago : fixing the sign up because lost it after updating the database
+05bed45 - n01444535, 12 days ago : change to oracle database instead
+67cfe80 - n01444535, 13 days ago : make short path
+b69c90f - n01444535, 13 days ago : make to the short path
+cd68921 - n01444535, 2 weeks ago : fixing and update by adding edit button
+e238a77 - n01444535, 2 weeks ago : change name from main to budget
+267320f - n01444535, 2 weeks ago : update the amount has "," when getting to thousand
+3ae2632 - n01444535, 2 weeks ago : update new list of expense, also add new button for adding and deleting
+377d492 - n01444535, 2 weeks ago : add "Hello, username", "settings", and "log out" in main frame
+37e2e10 - n01444535, 2 weeks ago : add "Hello, username", "settings", and "log out" in main frame
+65459af - n01444535, 2 weeks ago : None
+43845e7 - n01444535, 3 weeks ago : update to show password
+9f34801 - n01444535, 3 weeks ago : fix usernamee to username
+a5dc4c2 - n01444535, 3 weeks ago : version 1.0 can connect to database
+978109d - n01444535, 3 weeks ago : Version 1.0 can connect database
+152db07 - n01444535, 3 weeks ago : version has database
+c36bc4f - n01444535, 3 weeks ago : n/a
+dd835ba - n01444535, 3 weeks ago : n/a
+37aff95 - n01444535, 3 weeks ago : version 1
+4d29958 - n01444535, 3 weeks ago : version 1
+7e556e3 - n01444535, 3 weeks ago : new version
+843072a - n01444535, 3 weeks ago : this is version 1
+1c38f83 - n01444535, 3 weeks ago : Add files via upload
+fd8082c - n01444535, 3 weeks ago : Add files via upload
+976712b - n01444535, 3 weeks ago : Add files via upload
+5d4125c - n01444535, 3 weeks ago : Add files via upload
+6fe7558 - n01444535, 5 weeks ago : try 1
+282632f - n01444535, 5 weeks ago : Try #1
