@@ -7,9 +7,10 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 
 public class DatabaseManager {
-    private static final String URL = "jdbc:oracle:thin:@cisvm-oracle.unfcsd.unf.edu:1521:orcl";
-    private static final String USER = "G27";
-    private static final String PASSWORD = "ahjYW2h3";
+
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/ExpenseTracker";
+    private static final String USER = "DavidMac";
+    private static final String PASSWORD = "THULE.2710";
 
     public static Connection connect() {
         try {
