@@ -1,7 +1,7 @@
 package view;
 
-import javax.swing.*;
 import controller.UserController;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -13,98 +13,97 @@ public class LoginForm extends JFrame {
 
     public LoginForm() {
         setTitle("Budget Management");
-        setSize(350, 280);
-        setLayout(null);
-        getContentPane().setBackground(Color.BLACK);
+        setSize(400, 450); 
+        setMinimumSize(new Dimension(400, 450));
+        setLocationRelativeTo(null); 
 
-        JLabel titleLabel = new JLabel("Sign In");
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(Color.BLACK);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 10, 5, 10); 
+
+        JLabel titleLabel = new JLabel("SIGN IN", JLabel.CENTER);
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
         titleLabel.setForeground(Color.YELLOW);
-        titleLabel.setBounds(120, 20, 200, 30);
-        add(titleLabel);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        mainPanel.add(titleLabel, gbc);
 
         JLabel usernameLabel = new JLabel("Username");
         usernameLabel.setForeground(Color.WHITE);
-        usernameLabel.setBounds(40, 60, 100, 25);
-        add(usernameLabel);
+        gbc.gridy++;
+        mainPanel.add(usernameLabel, gbc);
 
         usernameField = new JTextField();
-        usernameField.setBounds(40, 85, 250, 30);
-        add(usernameField);
+        gbc.gridy++;
+        mainPanel.add(usernameField, gbc);
 
         JLabel passwordLabel = new JLabel("Password");
         passwordLabel.setForeground(Color.WHITE);
-        passwordLabel.setBounds(40, 120, 100, 25);
-        add(passwordLabel);
+        gbc.gridy++;
+        mainPanel.add(passwordLabel, gbc);
 
         passwordField = new JPasswordField();
-        passwordField.setBounds(40, 145, 250, 30);
-        add(passwordField);
+        gbc.gridy++;
+        mainPanel.add(passwordField, gbc);
 
         showPasswordCheckBox = new JCheckBox("Show Password");
-        showPasswordCheckBox.setBounds(40, 175, 150, 20);
         showPasswordCheckBox.setBackground(Color.BLACK);
         showPasswordCheckBox.setForeground(Color.YELLOW);
-        add(showPasswordCheckBox);
+        gbc.gridy++;
+        mainPanel.add(showPasswordCheckBox, gbc);
 
         showPasswordCheckBox.addActionListener(e -> {
             if (showPasswordCheckBox.isSelected()) {
-                passwordField.setEchoChar((char) 0); 
+                passwordField.setEchoChar((char) 0);
             } else {
-                passwordField.setEchoChar('•'); 
+                passwordField.setEchoChar('•');
             }
         });
 
         loginButton = new JButton("LOG IN");
-        loginButton.setBounds(40, 200, 250, 35);
-        loginButton.setBackground(Color.YELLOW);
+        loginButton.setBackground(new Color(30, 144, 255));
         loginButton.setFont(new Font("SansSerif", Font.BOLD, 14));
-        add(loginButton);
+        gbc.gridy++;
+        mainPanel.add(loginButton, gbc);
 
-        // 🔥 Gọi phương thức login khi nhấn Enter hoặc nhấn nút
-        ActionListener loginAction = e -> loginUser();
-        loginButton.addActionListener(loginAction);
+        loginButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
 
-        // 👇 Thêm KeyListener để hỗ trợ nhấn Enter trên bàn phím
-        KeyAdapter enterKeyListener = new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    loginUser();
-                }
+            boolean success = UserController.authenticateUser(username, password);
+            if (success) {
+                dispose();
+                new MainFrame();
+            } else {
+                JOptionPane.showMessageDialog(null, "Invalid credentials. Try again.");
             }
-        };
+        });
 
-        usernameField.addKeyListener(enterKeyListener);
-        passwordField.addKeyListener(enterKeyListener);
-
-        JLabel signUpLabel = new JLabel("New Customer? Sign Up");
+        JLabel signUpLabel = new JLabel("<html><u>New Customer? Sign Up</u></html>", JLabel.CENTER);
         signUpLabel.setForeground(Color.YELLOW);
-        signUpLabel.setBounds(100, 245, 200, 25);
-        signUpLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        add(signUpLabel);
+        signUpLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        signUpLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        gbc.gridy++;
+        mainPanel.add(signUpLabel, gbc);
 
         signUpLabel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                dispose(); 
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                dispose();
                 new RegisterForm();
             }
         });
 
+        JPanel wrapperPanel = new JPanel(new GridBagLayout());
+        wrapperPanel.setBackground(Color.BLACK);
+        wrapperPanel.add(mainPanel);
+        add(wrapperPanel, BorderLayout.CENTER);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-    }
-
-    private void loginUser() {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
-
-        boolean success = UserController.authenticateUser(username, password);
-        if (success) {
-            dispose();
-            new MainFrame();
-        } else {
-            JOptionPane.showMessageDialog(null, "Invalid credentials. Try again.");
-        }
     }
 }
