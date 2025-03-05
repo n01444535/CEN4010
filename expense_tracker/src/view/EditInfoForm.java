@@ -5,13 +5,11 @@ import model.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class EditInfoForm extends JFrame {
-    private JTextField firstNameField, lastNameField, emailField, phoneField, usernameField;
+    private JTextField firstNameField, lastNameField, emailField, phoneField;
     private JPasswordField oldPasswordField, newPasswordField, confirmPasswordField;
-    private JButton saveInfoButton, cancelInfoButton, savePasswordButton, cancelPasswordButton;
+    private JButton saveInfoButton, cancelInfoButton, savePasswordButton, cancelPasswordButton, deleteAccountButton;
     private User loggedInUser;
     private JTabbedPane tabbedPane;
 
@@ -23,8 +21,8 @@ public class EditInfoForm extends JFrame {
             return;
         }
 
-        setTitle("Setting");
-        setSize(400, 300);
+        setTitle("Settings");
+        setSize(400, 350);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
 
@@ -85,8 +83,14 @@ public class EditInfoForm extends JFrame {
         cancelInfoButton.setBounds(260, 150, 80, 35);
         panel.add(cancelInfoButton);
 
+        deleteAccountButton = new JButton("Delete Account");
+        deleteAccountButton.setBounds(140, 200, 200, 35);
+        deleteAccountButton.setForeground(Color.RED);
+        panel.add(deleteAccountButton);
+
         saveInfoButton.addActionListener(e -> updateUserInfo());
         cancelInfoButton.addActionListener(e -> dispose());
+        deleteAccountButton.addActionListener(e -> showDeleteAccountDialog());
 
         return panel;
     }
@@ -131,6 +135,28 @@ public class EditInfoForm extends JFrame {
         cancelPasswordButton.addActionListener(e -> dispose());
 
         return panel;
+    }
+
+    private void showDeleteAccountDialog() {
+        int choice = JOptionPane.showConfirmDialog(null,
+                "Your account will be permanently deleted in 2 days.\n" +
+                        "You can still log in within this period.\n\n" +
+                        "Are you sure you want to proceed?",
+                "Confirm Account Deletion", JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            scheduleAccountDeletion();
+        }
+    }
+
+    private void scheduleAccountDeletion() {
+        boolean success = UserController.scheduleAccountDeletion(loggedInUser.getId());
+        if (success) {
+            JOptionPane.showMessageDialog(null, "Account scheduled for deletion in 2 days.");
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "Failed to schedule account deletion.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void updateUserInfo() {

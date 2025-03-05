@@ -7,9 +7,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class UserController {
-    private static User loggedInUser = null; 
+    private static User loggedInUser = null;
 
     public static boolean registerUser(String firstName, String lastName, String username, String email, String phone, String password) {
         if (isEmailRegistered(email)) {
@@ -48,17 +50,17 @@ public class UserController {
             stmt.setString(1, username);
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
-            	loggedInUser = new User(
-            		    rs.getInt("id"), 
-            		    rs.getString("first_name"),
-            		    rs.getString("last_name"),
-            		    rs.getString("username"),
-            		    rs.getString("email"),
-            		    rs.getString("phone"),
-            		    rs.getString("password_hash")
-            		);
+                loggedInUser = new User(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("username"),
+                        rs.getString("email"),
+                        rs.getString("phone"),
+                        rs.getString("password_hash")
+                );
                 return true;
             }
             return false;
@@ -93,7 +95,7 @@ public class UserController {
             return false;
         }
     }
-    
+
     public static boolean updateUserInfo(int userId, String firstName, String lastName, String email, String phone, String newPassword) {
         String query;
         if (newPassword != null) {
@@ -101,7 +103,7 @@ public class UserController {
         } else {
             query = "UPDATE Users SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE id = ?";
         }
-        
+
         try (Connection conn = DatabaseManager.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             if (newPassword != null) {
@@ -114,12 +116,44 @@ public class UserController {
                 stmt.setString(4, phone);
                 stmt.setInt(5, userId);
             }
-            
+
             int rowsUpdated = stmt.executeUpdate();
             return rowsUpdated > 0;
         } catch (SQLException e) {
             System.out.println("Error updating user info: " + e.getMessage());
             return false;
+        }
+    }
+
+    public static boolean isAccountDeleted(int userId) {
+        try (Connection conn = DatabaseManager.connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT delete_at FROM Users WHERE id = ?")) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Timestamp deleteTime = rs.getTimestamp("delete_at");
+                if (deleteTime != null && deleteTime.before(new Timestamp(System.currentTimeMillis()))) {
+                    deleteAccount(userId);
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    private static void deleteAccount(int userId) {
+        try (Connection conn = DatabaseManager.connect();
+             PreparedStatement stmt = conn.prepareStatement("DELETE FROM Users WHERE id = ?")) {
+
+            stmt.setInt(1, userId);
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -129,5 +163,9 @@ public class UserController {
 
     public static void logout() {
         loggedInUser = null;
+    }
+
+    public static boolean scheduleAccountDeletion(int userId) {
+        return DatabaseManager.markAccountForDeletion(userId);
     }
 }

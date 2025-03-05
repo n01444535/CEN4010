@@ -2,6 +2,7 @@ package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
@@ -79,6 +80,20 @@ public class DatabaseManager {
             return rs.next();
         } catch (SQLException e) {
             System.out.println("❌ Error checking table existence: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public static boolean markAccountForDeletion(int userId) {
+        try (Connection conn = connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "UPDATE Users SET deletion_date = TIMESTAMPADD(DAY, 2, CURRENT_TIMESTAMP) WHERE id = ?")) {
+
+            stmt.setInt(1, userId);
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
             return false;
         }
     }
